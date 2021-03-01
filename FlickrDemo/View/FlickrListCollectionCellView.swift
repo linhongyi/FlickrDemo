@@ -12,6 +12,7 @@ class FlickrListCollectionCellView: UICollectionViewCell {
 
     public var imageView:UIImageView? = UIImageView();
     public var bottomLabel:UILabel? = UILabel();
+    private var imageLoadBusyIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView();
     
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +41,14 @@ class FlickrListCollectionCellView: UICollectionViewCell {
         }
   
         self.addSubview(_bottomLabel);
+        
+        //////////////////////////////////////////////////
+
+        guard let _imageLoadBusyIndicatorView = self.imageLoadBusyIndicatorView else {
+            return;
+        }
+  
+        _imageView.addSubview(_imageLoadBusyIndicatorView);
     }
     
     
@@ -81,5 +90,43 @@ class FlickrListCollectionCellView: UICollectionViewCell {
             bottomLabel.height.equalTo((self.bounds.size.height-10)*0.2);
             bottomLabel.bottom.equalTo(self.snp.bottom).offset(-5);
         }
+        
+        //////////////////////////////////////////////////
+
+        self.imageLoadBusyIndicatorView?.snp.makeConstraints { (imageLoadBusyIndicatorView) -> Void in
+            
+            guard let _imageView = self.imageView else
+            {
+                return;
+            }
+            
+            imageLoadBusyIndicatorView.center.equalTo(_imageView.snp.center);
+            imageLoadBusyIndicatorView.width.equalTo(FLVC_ImageLoadBusyIndicatorViewSize);
+            imageLoadBusyIndicatorView.height.equalTo(FLVC_ImageLoadBusyIndicatorViewSize);
+        }
+    }
+    
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MARK: - Instance method
+
+    //================================================================================
+    //
+    //================================================================================
+    public func showImageLoading()
+    {
+        self.imageLoadBusyIndicatorView?.startAnimating();
+    }
+    
+    
+    //================================================================================
+    //
+    //================================================================================
+    public func hideImageLoading()
+    {
+        self.imageLoadBusyIndicatorView?.stopAnimating();
     }
 }

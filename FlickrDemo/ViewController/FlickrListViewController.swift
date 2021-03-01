@@ -19,7 +19,7 @@ protocol FlickrListViewControllerDelegate {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // MARK: - Class
-class FlickrListViewController: UIViewController , UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class FlickrListViewController: UIViewController , UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
 
 
     public var delegate : FlickrListViewControllerDelegate?;
@@ -28,6 +28,7 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
  
     private var collectionView : UICollectionView?;
     private var refreshControl : UIRefreshControl?;
+    private var bottomSpinner : UIActivityIndicatorView?
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Creating, Copying and Dellocating Object method
@@ -115,6 +116,12 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     //================================================================================
     private func createMainUI()
     {
+        self.bottomSpinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium);
+        self.bottomSpinner?.color = UIColor.darkGray;
+        self.bottomSpinner?.hidesWhenStopped = true;
+       
+        //////////////////////////////////////////////////
+
         self.refreshControl = UIRefreshControl()
         self.refreshControl?.addTarget(self, action: #selector(refreshControlDidChanged), for: UIControl.Event.valueChanged)
    
@@ -138,7 +145,16 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
         _collectionView.register(FlickrListCollectionCellView.self, forCellWithReuseIdentifier: "FlickrListCollectionCellView");
         _collectionView.refreshControl = self.refreshControl;
         
+      
         self.view.addSubview(_collectionView);
+        
+        //////////////////////////////////////////////////
+        
+        guard let _bottomSpinner = self.bottomSpinner else {
+            return;
+        }
+        
+        self.collectionView?.addSubview(_bottomSpinner);
         
     }
     
@@ -150,6 +166,10 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     {
         self.refreshControl?.removeFromSuperview();
         self.refreshControl = nil;
+        
+        self.bottomSpinner?.removeFromSuperview();
+        self.bottomSpinner = nil
+        
         
         self.collectionView?.delegate = nil;
         self.collectionView?.dataSource = nil;
@@ -181,8 +201,28 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
                 {
                     self.refreshControl?.endRefreshing();
                 }
+                else if(self.bottomSpinner?.isAnimating==true)
+                {
+                    self.bottomSpinner?.stopAnimating();
+                }
+                
                 
                 self.collectionView?.reloadData();
+                self.collectionView?.collectionViewLayout.invalidateLayout();
+                
+                //////////////////////////////////////////////////
+
+                guard let collectionHeight = self.collectionView?.collectionViewLayout.collectionViewContentSize.height else
+                {
+                    return;
+                }
+                
+                self.bottomSpinner?.frame = CGRect(x: 0,
+                                                   y: Double(collectionHeight)+FLVC_BottomSpinnerHeight/2,
+                                                   width: Double(self.collectionView?.frame.size.width ?? self.view.bounds.size.width),
+                                                   height: FLVC_BottomSpinnerHeight);
+                
+                self.collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: CGFloat(FLVC_BottomSpinnerHeight), right: 0);
             }
         });
     }
@@ -230,7 +270,7 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
             
             //////////////////////////////////////////////////
 
-            if(_flickrListViewModel.page==0)
+            if(_flickrListViewModel.page==Flickr_StartPage)
             {
                 _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response);
             }
@@ -266,14 +306,14 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: Private RefreshControl action method
+    // MARK: - Private RefreshControl action method
 
     //================================================================================
     //
     //================================================================================
     @objc func refreshControlDidChanged()
     {
-        self.flickrListViewModel?.page = 0;
+        self.flickrListViewModel?.page = Flickr_StartPage;
         
         self.loadData();
     }
@@ -322,8 +362,11 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
                 return cell;
             }
             
+
+            cell.showImageLoading();
             
             DownloadImageViewModel.sharedInstance.loadImageFromModel(model: flickrPhotoModel){ (image:UIImage?) in
+                cell.hideImageLoading();
                 cell.imageView?.image = image;
             };
             
@@ -350,4 +393,49 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
         return CGSize(width: collectionView.bounds.size.width/2, height: collectionView.bounds.size.width/2);
     }
     
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MARK: - UIScrollViewDelegte method
+
+    //================================================================================
+    //
+    //================================================================================
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let height = scrollView.frame.size.height
+        let contentYoffset = scrollView.contentOffset.y
+        let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+       
+        repeat
+        {
+            if distanceFromBottom >= height {
+                break
+            }
+            
+
+            if(self.flickrListViewModel?.supportPageLoad(forFilter: false)==false)
+            {
+                break
+            }
+            
+            
+            if(self.bottomSpinner?.isAnimating==true)
+            {
+                break
+            }
+            
+            if(self.flickrListViewModel?.numberOfRowsInSection(section: 0, forFilter: false) ?? 0<=0)
+            {
+                break
+            }
+            
+            
+            self.flickrListViewModel?.page += 1;
+            self.bottomSpinner?.startAnimating()
+            self.loadData();
+            
+        } while(0 != 0)
+    }
 }

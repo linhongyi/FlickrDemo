@@ -19,7 +19,7 @@ class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewContr
     {
         let flickrListViewModel = FlickrListViewModel()
         
-        flickrListViewModel.page = 0;
+        flickrListViewModel.page = Flickr_StartPage;
         flickrListViewModel.countPerPage = cuntOfPage;
         flickrListViewModel.keyword = keyword;
         

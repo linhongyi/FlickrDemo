@@ -11,9 +11,11 @@ class FlickrListViewModel : SectionViewModel {
     
     public var reloadDataCompleted : (()->())?;
     
-    public var page:Int = 0;
+    public var page:Int = Flickr_StartPage;
     public var countPerPage:Int = 10;
     public var keyword:String = "";
+    
+    private var total:Int = 0;
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Instance method
@@ -25,6 +27,10 @@ class FlickrListViewModel : SectionViewModel {
     {
         self.sectionModelsForDefault.removeAll();
         self.sectionModelsForFilter.removeAll();
+        
+        //////////////////////////////////////////////////
+
+        self.total = Int(flickrPhotoResponse.photos.total) ?? 0;
         
         self.appendDataFromResponse(flickrPhotoResponse: flickrPhotoResponse);
     }
@@ -90,13 +96,36 @@ class FlickrListViewModel : SectionViewModel {
             
             //////////////////////////////////////////////////
 
+            // last one
+            if(sectionModel?.rowModels.count ?? 0>0)
+            {
+                guard let _sectionModel = sectionModel else {
+                    return;
+                }
+                
+                
+                self.sectionModelsForDefault.append(_sectionModel);
+            }
+            
+            
+            //////////////////////////////////////////////////
+
             guard let _reloadDataCompleted = self.reloadDataCompleted else {
                 return;
             }
             
+      
             _reloadDataCompleted();
             
         }while (0 != 0)
     }
 
+    
+    //================================================================================
+    //
+    //================================================================================
+    public func supportPageLoad(forFilter: Bool)->Bool
+    {
+        return self.sectionModels(forFilter: false).count<self.total;
+    }
 }

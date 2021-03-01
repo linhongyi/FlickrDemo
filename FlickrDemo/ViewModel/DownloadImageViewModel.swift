@@ -48,7 +48,7 @@ class DownloadImageViewModel: ImageCachedViewModel {
                 }
                 else
                 {
-                    let urlstring = FlickrPhotoURL + model.server  + "/" + model.id + "_" + model.secret + "_w.jpg";
+                    let urlstring = FlickrPhotoURL + model.server  + "/" + model.id + "_" + model.secret + "_m.jpg";
                     
                     
                     guard let url = URL(string: urlstring) else
