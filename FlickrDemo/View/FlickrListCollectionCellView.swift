@@ -82,10 +82,4 @@ class FlickrListCollectionCellView: UICollectionViewCell {
             bottomLabel.bottom.equalTo(self.snp.bottom).offset(-5);
         }
     }
-
-    
-    
-    
-    
-    
 }

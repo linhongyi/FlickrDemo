@@ -92,4 +92,5 @@ class FlickrListViewModel : SectionViewModel {
             
         }while (0 != 0)
     }
+
 }

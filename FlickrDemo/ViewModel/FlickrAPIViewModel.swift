@@ -38,7 +38,8 @@ class FlickrAPIViewModel{
             url += ("&per_page=" + String(perPage));
             url += "&format=json&nojsoncallback=1";
             
-
+            print(url);
+            
             AF.request(url).responseDecodable(of: FlickrPhotoResponse.self) { response in
             
             

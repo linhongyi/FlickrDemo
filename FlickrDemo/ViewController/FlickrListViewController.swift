@@ -27,6 +27,7 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     private var flickrAPIViewModel : FlickrAPIViewModel?;
  
     private var collectionView : UICollectionView?;
+    private var refreshControl : UIRefreshControl?;
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Creating, Copying and Dellocating Object method
@@ -114,6 +115,11 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     //================================================================================
     private func createMainUI()
     {
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl?.addTarget(self, action: #selector(refreshControlDidChanged), for: UIControl.Event.valueChanged)
+   
+        //////////////////////////////////////////////////
+
         let layout = UICollectionViewFlowLayout.init();
         layout.itemSize = CGSize(width: self.view.bounds.size.width/2, height: self.view.bounds.size.height/2);
         layout.minimumLineSpacing = 0;
@@ -130,8 +136,10 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.register(FlickrListCollectionCellView.self, forCellWithReuseIdentifier: "FlickrListCollectionCellView");
+        _collectionView.refreshControl = self.refreshControl;
         
         self.view.addSubview(_collectionView);
+        
     }
     
     
@@ -140,7 +148,14 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     //================================================================================
     private func removeMainUI()
     {
-  
+        self.refreshControl?.removeFromSuperview();
+        self.refreshControl = nil;
+        
+        self.collectionView?.delegate = nil;
+        self.collectionView?.dataSource = nil;
+        
+        self.collectionView?.removeFromSuperview();
+        self.collectionView = nil;
     }
     
     
@@ -205,6 +220,12 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
             {
                 _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response) {
                     DispatchQueue.main.async {
+                        
+                        if(self?.refreshControl?.isRefreshing==true)
+                        {
+                            self?.refreshControl?.endRefreshing();
+                        }
+                        
                         self?.collectionView?.reloadData();
                     }
                 };
@@ -213,6 +234,12 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
             {
                 _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response) {
                     DispatchQueue.main.async {
+                        
+                        if(self?.refreshControl?.isRefreshing==true)
+                        {
+                            self?.refreshControl?.endRefreshing();
+                        }
+                        
                         self?.collectionView?.reloadData();
                     }
                 };
@@ -238,6 +265,25 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
       
         _delegate.flickrListViewControllerDidBack(flickrListViewController: self);
     }
+    
+    
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MARK: Private RefreshControl action method
+
+    //================================================================================
+    //
+    //================================================================================
+    @objc func refreshControlDidChanged()
+    {
+        self.flickrListViewModel?.page = 0;
+        
+        self.loadData();
+    }
+    
     
     
     
