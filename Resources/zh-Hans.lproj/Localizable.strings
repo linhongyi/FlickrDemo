@@ -1,0 +1,11 @@
+//Common
+"MLS_UnknownErrorHappen" = "發生未知錯誤";
+"MLS_NoDataDisplay" = "沒有資料顯示";
+"MLS_OK" = "確定";
+"MLS_Cancel" = "取消";
+
+//MainViewController
+"MLS_Search" = "搜尋";
+"MLS_Keyword" = "關鍵字";
+"MLS_NumberOfPage" = "每頁幾筆";
+"MLS_SearchInputPage" = "搜尋輸入頁";
