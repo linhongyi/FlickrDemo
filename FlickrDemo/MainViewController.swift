@@ -144,6 +144,7 @@ class MainViewController: UIViewController {
             return;
         }
         
+        keywordTextField.text = "dog";
         keywordTextField.placeholder = MVC_MLS_Keyword;
         keywordTextField.textAlignment = NSTextAlignment.center;
         keywordTextField.layer.borderWidth = 1.0;
@@ -160,6 +161,7 @@ class MainViewController: UIViewController {
             return;
         }
         
+        perPageTextField.text = "10";
         perPageTextField.placeholder = MVC_MLS_NumberOfPage;
         perPageTextField.textAlignment = NSTextAlignment.center;
         perPageTextField.layer.borderWidth = 1.0;
