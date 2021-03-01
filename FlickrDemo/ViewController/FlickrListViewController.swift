@@ -171,6 +171,20 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     private func bindViewModel()
     {
         self.flickrAPIViewModel = FlickrAPIViewModel();
+        
+        //////////////////////////////////////////////////
+
+        self.flickrListViewModel?.reloadDataCompleted = ({
+            DispatchQueue.main.async {
+                
+                if(self.refreshControl?.isRefreshing==true)
+                {
+                    self.refreshControl?.endRefreshing();
+                }
+                
+                self.collectionView?.reloadData();
+            }
+        });
     }
     
     
@@ -218,31 +232,11 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
 
             if(_flickrListViewModel.page==0)
             {
-                _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response) {
-                    DispatchQueue.main.async {
-                        
-                        if(self?.refreshControl?.isRefreshing==true)
-                        {
-                            self?.refreshControl?.endRefreshing();
-                        }
-                        
-                        self?.collectionView?.reloadData();
-                    }
-                };
+                _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response);
             }
             else
             {
-                _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response) {
-                    DispatchQueue.main.async {
-                        
-                        if(self?.refreshControl?.isRefreshing==true)
-                        {
-                            self?.refreshControl?.endRefreshing();
-                        }
-                        
-                        self?.collectionView?.reloadData();
-                    }
-                };
+                _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response);
             }
         };
     }

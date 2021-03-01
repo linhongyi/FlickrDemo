@@ -9,6 +9,8 @@ import Foundation
 
 class FlickrListViewModel : SectionViewModel {
     
+    public var reloadDataCompleted : (()->())?;
+    
     public var page:Int = 0;
     public var countPerPage:Int = 10;
     public var keyword:String = "";
@@ -19,19 +21,19 @@ class FlickrListViewModel : SectionViewModel {
     //================================================================================
     //
     //================================================================================
-    public func clearAndloadDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse, completion:@escaping () -> ())
+    public func clearAndloadDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse)
     {
         self.sectionModelsForDefault.removeAll();
         self.sectionModelsForFilter.removeAll();
         
-        self.appendDataFromResponse(flickrPhotoResponse: flickrPhotoResponse, completion: completion);
+        self.appendDataFromResponse(flickrPhotoResponse: flickrPhotoResponse);
     }
     
     
     //================================================================================
     //
     //================================================================================
-    public func appendDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse, completion:@escaping () -> ())
+    public func appendDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse)
     {
         repeat
         {
@@ -88,7 +90,11 @@ class FlickrListViewModel : SectionViewModel {
             
             //////////////////////////////////////////////////
 
-            completion();
+            guard let _reloadDataCompleted = self.reloadDataCompleted else {
+                return;
+            }
+            
+            _reloadDataCompleted();
             
         }while (0 != 0)
     }
