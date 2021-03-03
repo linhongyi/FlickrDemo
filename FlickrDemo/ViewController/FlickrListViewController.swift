@@ -410,36 +410,42 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     //
     //================================================================================
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let height = scrollView.frame.size.height
-        let contentYoffset = scrollView.contentOffset.y
-        let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+        
+        guard let collectionView = scrollView as?UICollectionView else {
+            return;
+        }
+        
+        
+        let height = scrollView.frame.size.height;
+        let contentYoffset = scrollView.contentOffset.y;
+        let distanceFromBottom = collectionView.collectionViewLayout.collectionViewContentSize.height - contentYoffset;
        
         repeat
         {
             if distanceFromBottom >= height {
-                break
+                break;
             }
             
 
             if(self.flickrListViewModel?.supportPageLoad(forFilter: false)==false)
             {
-                break
+                break;
             }
             
             
             if(self.bottomSpinner?.isAnimating==true)
             {
-                break
+                break;
             }
             
             if(self.flickrListViewModel?.numberOfRowsInSection(section: 0, forFilter: false) ?? 0<=0)
             {
-                break
+                break;
             }
             
             
             self.flickrListViewModel?.page += 1;
-            self.bottomSpinner?.startAnimating()
+            self.bottomSpinner?.startAnimating();
             self.loadData();
             
         } while(0 != 0)
