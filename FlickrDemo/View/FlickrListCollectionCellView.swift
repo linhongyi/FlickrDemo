@@ -12,6 +12,8 @@ class FlickrListCollectionCellView: UICollectionViewCell {
 
     public var imageView:UIImageView? = UIImageView();
     public var bottomLabel:UILabel? = UILabel();
+    public var favoriteButton:UIButton? = UIButton();
+    
     private var imageLoadBusyIndicatorView: UIActivityIndicatorView? = UIActivityIndicatorView();
     
 
@@ -49,6 +51,17 @@ class FlickrListCollectionCellView: UICollectionViewCell {
         }
   
         _imageView.addSubview(_imageLoadBusyIndicatorView);
+        
+        //////////////////////////////////////////////////
+
+        guard let _favoriteButton = self.favoriteButton else {
+            return;
+        }
+        
+        
+        _favoriteButton.setImage(UIImage(systemName: "star"), for: .normal);
+        
+        self.addSubview(_favoriteButton);
     }
     
     
@@ -104,6 +117,18 @@ class FlickrListCollectionCellView: UICollectionViewCell {
             imageLoadBusyIndicatorView.width.equalTo(FLVC_ImageLoadBusyIndicatorViewSize);
             imageLoadBusyIndicatorView.height.equalTo(FLVC_ImageLoadBusyIndicatorViewSize);
         }
+        
+        //////////////////////////////////////////////////
+
+        self.favoriteButton?.snp.makeConstraints { (favoriteButton) -> Void in
+            
+    
+            favoriteButton.top.equalTo(self.snp.top).offset(5);
+            favoriteButton.right.equalTo(self.snp.right).offset(-5);
+            favoriteButton.width.equalTo(FLVC_FavoriteButtonSize);
+            favoriteButton.height.equalTo(FLVC_FavoriteButtonSize);
+        }
+        
     }
     
     
