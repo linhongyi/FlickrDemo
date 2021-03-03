@@ -8,7 +8,7 @@
 import Foundation
 
 struct FlickrPhotoResponse : Decodable{
-    var photos:FlickerPhotosModel;
+    var photos:FlickrPhotosModel;
     var stat:String;
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ struct FlickrPhotoResponse : Decodable{
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        photos = try container.decode(FlickerPhotosModel.self, forKey: .photos);
+        photos = try container.decode(FlickrPhotosModel.self, forKey: .photos);
         stat = try container.decode(String.self, forKey: .stat);
     }
     

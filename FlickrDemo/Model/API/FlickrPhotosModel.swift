@@ -1,5 +1,5 @@
 //
-//  FlickerPhotosModel.swift
+//  FlickrPhotosModel.swift
 //  FlickrDemo
 //
 //  Created by 林紘毅 on 2021/3/1.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class FlickerPhotosModel : Decodable{
+class FlickrPhotosModel : Decodable{
     var photo:Array<FlickrPhotoModel>;
     var page:Int;
     var pages:Int;
