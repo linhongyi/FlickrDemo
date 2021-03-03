@@ -4,6 +4,10 @@
 "MLS_OK" = "確定";
 "MLS_Cancel" = "取消";
 
+//Error
+"MLS_ParameterError" = "參數不合法";
+"MLS_APIError" = "API不合法";
+
 //MainViewController
 "MLS_Search" = "搜尋";
 "MLS_Keyword" = "關鍵字";

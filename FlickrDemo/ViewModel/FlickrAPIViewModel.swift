@@ -8,6 +8,8 @@
 import Foundation
 import Alamofire
 
+
+
 class FlickrAPIViewModel{
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +24,8 @@ class FlickrAPIViewModel{
         {
             if(page<0 || perPage<0)
             {
+                completion(nil,FlickrDemoError.ParameterInvalid);
+                
                 break;
             }
             
@@ -39,8 +43,11 @@ class FlickrAPIViewModel{
             url += "&format=json&nojsoncallback=1";
             
             print(url);
-            
+     
             guard let encodedUrl = url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                
+                completion(nil,FlickrDemoError.APIURL_Illegal);
+                
                 return;
             }
             

@@ -207,28 +207,39 @@ internal class FlickrListViewController: BaseCollectionViewController{
         
         self.flickrAPIViewModel?.loadPage(keyword: _keyword, page: _page, perPage: _countPerPage) {  [weak self] (response:FlickrPhotoResponse?, error:Error?) in
         
-            guard let _flickrListViewModel = self?.flickrListViewModel else
+            if(error==nil)
             {
-                return;
-            }
-            
-            //////////////////////////////////////////////////
-            
-            guard let _response = response else
-            {
-                return;
-            }
-            
-            //////////////////////////////////////////////////
+                guard let _flickrListViewModel = self?.flickrListViewModel else
+                {
+                    return;
+                }
+                
+                //////////////////////////////////////////////////
+                
+                guard let _response = response else
+                {
+                    return;
+                }
+                
+                //////////////////////////////////////////////////
 
-            if(_flickrListViewModel.page==Flickr_StartPage)
-            {
-                _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response, forFilter: false);
+                if(_flickrListViewModel.page==Flickr_StartPage)
+                {
+                    _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response, forFilter: false);
+                }
+                else
+                {
+                    _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response, forFilter: false);
+                }
             }
             else
             {
-                _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response, forFilter: false);
+                DispatchQueue.main.async {
+                    self?.view.showToast(text: error?.alertMessage() ?? Common_MLS_UnknownErrorHappen);
+                };
             }
+            
+            
         };
     }
     

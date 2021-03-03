@@ -8,7 +8,7 @@
 import Foundation
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MARK: - Common method
+// MARK: - Common
 
 let Common_MLS_UnknownErrorHappen = NSLocalizedString("MLS_UnknownErrorHappen", comment: "")
 let Common_MLS_NoDataDisplay = NSLocalizedString("MLS_NoDataDisplay", comment: "")
@@ -16,6 +16,14 @@ let Common_MLS_OK = NSLocalizedString("MLS_OK", comment: "")
 let Common_MLS_Cancel = NSLocalizedString("MLS_Cancel", comment: "")
 
 
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// MARK: - Error
+
+let Error_MLS_ParameterError = NSLocalizedString("MLS_ParameterError", comment: "")
+let Error_MLS_APIError = NSLocalizedString("MLS_APIError", comment: "")
 
 
 

@@ -40,9 +40,13 @@ class FavoriteViewController: BaseCollectionViewController {
         self.flickrListViewModel?.reloadDataCompleted = ({
             DispatchQueue.main.async {
                
+             
                 self.collectionView?.reloadData();
-                self.collectionView?.collectionViewLayout.invalidateLayout();
-    
+            
+                if(self.flickrListViewModel?.numberSections(forFilter:false) ?? 0<=0)
+                {
+                    self.view.showToast(text: Common_MLS_NoDataDisplay);
+                }
             }
         });
     }
