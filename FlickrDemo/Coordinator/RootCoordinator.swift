@@ -17,6 +17,11 @@ class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewContr
     //================================================================================
     func presentFlickrListViewController(viewController:UIViewController, keyword: String, cuntOfPage: Int)
     {
+        let myTabBar = UITabBarController();
+        
+        myTabBar.tabBar.backgroundColor = UIColor.clear;
+    
+
         let flickrListViewModel = FlickrListViewModel()
         
         flickrListViewModel.page = Flickr_StartPage;
@@ -28,8 +33,30 @@ class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewContr
         let flickrListViewController : FlickrListViewController = FlickrListViewController.init(viewModel: flickrListViewModel);
         flickrListViewController.delegate = self;
       
+        flickrListViewController.tabBarItem =
+            UITabBarItem(tabBarSystemItem:.search, tag: 100)
         
-        viewController.navigationController?.pushViewController(flickrListViewController, animated: true);
+        //////////////////////////////////////////////////
+
+        let favoriteViewModel = FlickrListViewModel()
+        
+        favoriteViewModel.page = Flickr_StartPage;
+        favoriteViewModel.countPerPage = cuntOfPage;
+        favoriteViewModel.keyword = keyword;
+        
+        //////////////////////////////////////////////////
+
+        let favoriteViewController : FavoriteViewController = FavoriteViewController.init(viewModel: favoriteViewModel);
+        favoriteViewController.delegate = self;
+      
+        favoriteViewController.tabBarItem =
+            UITabBarItem(tabBarSystemItem:.favorites, tag: 101)
+        
+        myTabBar.viewControllers = [
+            flickrListViewController, favoriteViewController];
+        
+        
+        viewController.navigationController?.pushViewController(myTabBar, animated: true);
     }
     
     
