@@ -22,18 +22,18 @@ protocol MainViewControllerDelegate {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // MARK: - Class
 
-class MainViewController: UIViewController {
-
+class MainViewController: UIViewController, UITextFieldDelegate {
+    
     public var delegate : MainViewControllerDelegate?;
     
     private var keywordTextField : UITextField?;
     private var perPageTextField : UITextField?;
     private var searchButton : UIButton?;
- 
-
+    
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Responding to View's Event
-
+    
     //================================================================================
     //
     //================================================================================
@@ -42,11 +42,11 @@ class MainViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         //////////////////////////////////////////////////
-
-     
+        
+        
         self.navigationItem.title = MVC_MLS_MLS_SearchInputPage;
     }
-
+    
     
     //================================================================================
     //
@@ -55,7 +55,7 @@ class MainViewController: UIViewController {
         super.viewWillAppear(animated);
         
         //////////////////////////////////////////////////
-
+        
         self.createMainUI();
         self.registerNotification();
     }
@@ -68,7 +68,7 @@ class MainViewController: UIViewController {
         super.viewWillDisappear(animated);
         
         //////////////////////////////////////////////////
-
+        
         self.removeMainUI();
         self.unRegisterNotification();
     }
@@ -79,15 +79,15 @@ class MainViewController: UIViewController {
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Layout SubView
-
+    
     //================================================================================
     //
     //================================================================================
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews();
-    
+        
         //////////////////////////////////////////////////
-
+        
         
         self.keywordTextField?.snp.makeConstraints { (textField) -> Void in
             textField.width.equalTo(self.view.frame.size.width-MVC_ContentEdgeInsets.left-MVC_ContentEdgeInsets.right);
@@ -97,7 +97,7 @@ class MainViewController: UIViewController {
         }
         
         //////////////////////////////////////////////////
-
+        
         self.perPageTextField?.snp.makeConstraints { (textField) -> Void in
             
             guard let keywordTextField = self.keywordTextField else {
@@ -110,7 +110,7 @@ class MainViewController: UIViewController {
         }
         
         //////////////////////////////////////////////////
-
+        
         self.searchButton?.snp.makeConstraints { (button) -> Void in
             
             guard let perPageTextField = self.perPageTextField else {
@@ -126,13 +126,13 @@ class MainViewController: UIViewController {
     
     
     
-
-  
+    
+    
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Private UI method
-
+    
     //================================================================================
     //
     //================================================================================
@@ -143,8 +143,9 @@ class MainViewController: UIViewController {
         guard let keywordTextField = self.keywordTextField else {
             return;
         }
-        
+        #if DEBUG
         keywordTextField.text = "dog";
+        #endif
         keywordTextField.placeholder = MVC_MLS_Keyword;
         keywordTextField.textAlignment = NSTextAlignment.center;
         keywordTextField.layer.borderWidth = 1.0;
@@ -154,16 +155,22 @@ class MainViewController: UIViewController {
         self.view.addSubview(keywordTextField);
         
         //////////////////////////////////////////////////
-
+        
         self.perPageTextField = UITextField();
         
         guard let perPageTextField = self.perPageTextField else {
             return;
         }
         
+        perPageTextField.delegate = self;
+        
+        #if DEBUG
         perPageTextField.text = "10";
+        #endif
+        
         perPageTextField.placeholder = MVC_MLS_NumberOfPage;
         perPageTextField.textAlignment = NSTextAlignment.center;
+        perPageTextField.keyboardType = UIKeyboardType.numberPad;
         perPageTextField.layer.borderWidth = 1.0;
         perPageTextField.layer.cornerRadius = 2.0;
         perPageTextField.layer.borderColor = UIColor.darkGray.cgColor;
@@ -171,7 +178,7 @@ class MainViewController: UIViewController {
         self.view.addSubview(perPageTextField);
         
         //////////////////////////////////////////////////
-
+        
         self.searchButton = UIButton();
         
         guard let searchButton = self.searchButton else {
@@ -207,26 +214,23 @@ class MainViewController: UIViewController {
     //================================================================================
     private func updateSearchButtonEnable()
     {
-        guard let _countOfPage = self.perPageTextField?.text else {
+        self.searchButton?.isEnabled = false;
+        self.searchButton?.backgroundColor = UIColor.lightGray;
+        
+        guard let countOfPage = Int(self.perPageTextField?.text ?? "") else {
             return;
         }
-        
         
         //////////////////////////////////////////////////
-
-        guard let _keyword = self.keywordTextField?.text else {
+        
+        guard let keyword = self.keywordTextField?.text else {
             return;
         }
         
-        if(_countOfPage.count>0 && _keyword.count>0)
+        if(countOfPage > 0 && keyword.count>0)
         {
             self.searchButton?.isEnabled = true;
             self.searchButton?.backgroundColor = UIColor.blue;
-        }
-        else
-        {
-            self.searchButton?.isEnabled = false;
-            self.searchButton?.backgroundColor = UIColor.lightGray;
         }
     }
     
@@ -237,7 +241,7 @@ class MainViewController: UIViewController {
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Private Receive Notification method
-
+    
     //================================================================================
     //
     //================================================================================
@@ -260,7 +264,7 @@ class MainViewController: UIViewController {
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Private Notification  method
-
+    
     //================================================================================
     //
     //================================================================================
@@ -283,22 +287,22 @@ class MainViewController: UIViewController {
         guard let _delegate = self.delegate else {
             return;
         }
-      
+        
         //////////////////////////////////////////////////
-
+        
         guard let _countOfPage = self.perPageTextField?.text else {
             return;
         }
         
         
         //////////////////////////////////////////////////
-
+        
         guard let _keyword = self.keywordTextField?.text else {
             return;
         }
         
         //////////////////////////////////////////////////
-
+        
         guard let count:Int = Int(_countOfPage) else
         {
             
@@ -306,5 +310,32 @@ class MainViewController: UIViewController {
         }
         
         _delegate.mainViewControllerDidSearch(mainViewController: self, keyword: _keyword, countOfPage:count);
+    }
+    
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // MARK: - UITextFieldDelegate Method
+    
+    //================================================================================
+    //
+    //================================================================================
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        var result = true;
+        
+        if (textField == self.perPageTextField)
+        {
+            let allowedCharacters = CharacterSet.decimalDigits;
+            
+            let characterSet = CharacterSet(charactersIn: string);
+            
+            result = allowedCharacters.isSuperset(of: characterSet);
+        }
+        
+        return result;
     }
 }
