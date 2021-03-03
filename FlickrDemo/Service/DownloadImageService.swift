@@ -1,5 +1,5 @@
 //
-//  DownloadImageViewModel.swift
+//  DownloadImageService.swift
 //  FlickrDemo
 //
 //  Created by 林紘毅 on 2021/3/1.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-class DownloadImageViewModel: ImageCachedViewModel {
+class DownloadImageService: ImageCachedService {
 
-    static let sharedInstance = DownloadImageViewModel()
+    static let sharedInstance = DownloadImageService()
     
     private var operationQueue:OperationQueue?;
 
@@ -74,14 +74,5 @@ class DownloadImageViewModel: ImageCachedViewModel {
                 }
             }
         }
-    }
-
-    
-    //================================================================================
-    //
-    //================================================================================
-    public func loadImageFromModel2(model:FlickrPhotoModel, completion:@escaping () -> ())
-    {
-        completion();
     }
 }

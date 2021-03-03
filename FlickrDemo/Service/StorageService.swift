@@ -1,5 +1,5 @@
 //
-//  StorageViewModel.swift
+//  StorageService.swift
 //  FlickrDemo
 //
 //  Created by 林紘毅 on 2021/3/2.
@@ -7,7 +7,9 @@
 
 import UIKit
 
-class StorageViewModel: NSObject {
+class StorageService: NSObject {
+    
+    static let sharedInstance = StorageService();
     
     private var allData:[FlickrFavoriteModel]?;
     
@@ -103,7 +105,7 @@ class StorageViewModel: NSObject {
     //================================================================================
     //
     //================================================================================
-    public func removeData(data:FlickrFavoriteModel)
+    public func removeData(id:String!)
     {
         guard let _allData = self.allData else {
             return;
@@ -116,7 +118,7 @@ class StorageViewModel: NSObject {
         for (index, element) in _allData.enumerated()
         {
             
-            if(element.id.compare(data.id) != ComparisonResult.orderedSame)
+            if(element.id.compare(id) != ComparisonResult.orderedSame)
             {
                 continue;
             }
@@ -147,5 +149,14 @@ class StorageViewModel: NSObject {
         }
         
         return _allData.map{ $0.id };
+    }
+    
+    
+    //================================================================================
+    //
+    //================================================================================
+    public func allDatas() -> [FlickrFavoriteModel]
+    {
+        return self.allData ?? [];
     }
 }

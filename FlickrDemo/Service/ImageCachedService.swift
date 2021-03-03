@@ -1,5 +1,5 @@
 //
-//  ImageCachedViewModel.swift
+//  ImageCachedService.swift
 //  FlickrDemo
 //
 //  Created by 林紘毅 on 2021/3/1.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImageCachedViewModel: NSObject {
+class ImageCachedService: NSObject {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Property
