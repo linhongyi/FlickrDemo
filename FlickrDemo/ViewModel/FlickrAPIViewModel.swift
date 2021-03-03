@@ -40,7 +40,11 @@ class FlickrAPIViewModel{
             
             print(url);
             
-            AF.request(url).responseDecodable(of: FlickrPhotoResponse.self) { response in
+            guard let encodedUrl = url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                return;
+            }
+            
+            AF.request(encodedUrl).responseDecodable(of: FlickrPhotoResponse.self) { response in
             
             
                 if((response.error) != nil)

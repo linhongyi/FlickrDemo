@@ -123,8 +123,8 @@ class FlickrListCollectionCellView: UICollectionViewCell {
         self.favoriteButton?.snp.makeConstraints { (favoriteButton) -> Void in
             
     
-            favoriteButton.top.equalTo(self.snp.top).offset(5);
-            favoriteButton.right.equalTo(self.snp.right).offset(-5);
+            favoriteButton.top.equalTo(self.snp.top).offset(8);
+            favoriteButton.right.equalTo(self.snp.right).offset(-8);
             favoriteButton.width.equalTo(FLVC_FavoriteButtonSize);
             favoriteButton.height.equalTo(FLVC_FavoriteButtonSize);
         }
@@ -153,5 +153,21 @@ class FlickrListCollectionCellView: UICollectionViewCell {
     public func hideImageLoading()
     {
         self.imageLoadBusyIndicatorView?.stopAnimating();
+    }
+    
+    
+    //================================================================================
+    //
+    //================================================================================
+    public func updateFavoriteButtonImage(favorite:Bool)
+    {
+        if(favorite == true)
+        {
+            self.favoriteButton?.setImage(UIImage(systemName: "star.fill"), for: .normal);
+        }
+        else
+        {
+            self.favoriteButton?.setImage(UIImage(systemName: "star"), for: .normal)
+        }
     }
 }

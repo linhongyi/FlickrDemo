@@ -8,100 +8,53 @@
 import UIKit
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MARK: - Protocol
-protocol FlickrListViewControllerDelegate {
-    func flickrListViewControllerDidBack(flickrListViewController:FlickrListViewController);
-}
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // MARK: - Class
-class FlickrListViewController: UIViewController , UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
+internal class FlickrListViewController: BaseCollectionViewController{
 
-
-    public var delegate : FlickrListViewControllerDelegate?;
-    private var flickrListViewModel : FlickrListViewModel?;
     private var flickrAPIViewModel : FlickrAPIViewModel?;
  
-    private var collectionView : UICollectionView?;
     private var refreshControl : UIRefreshControl?;
     private var bottomSpinner : UIActivityIndicatorView?
     
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - Creating, Copying and Dellocating Object method
-
-    //================================================================================
-    //
-    //================================================================================
-    init(viewModel: FlickrListViewModel)
-    {
-        super.init(nibName: nil, bundle: nil)
-        self.flickrListViewModel = viewModel
-    }
-    
-    //================================================================================
-    //
-    //================================================================================
-    required init?(coder: NSCoder) {
-        super.init(coder: coder);
-    }
-    
     
     
     
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - Respoding to View's Event
+    // MARK: Responding to View's event
 
     //================================================================================
     //
     //================================================================================
     override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        super.viewDidLoad();
         
         //////////////////////////////////////////////////
 
-        self.view.backgroundColor = UIColor.white;
+        guard let keyword = self.flickrListViewModel?.keyword else
+        {
+            return;
+        }
         
-        //////////////////////////////////////////////////
-
-        self.bindViewModel();
+        self.tabBarController?.navigationItem.title = FLV_MLS_SearchResult + " " + keyword;
     }
-    
 
+
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MARK: - Private RefreshControl action method
+    
     //================================================================================
     //
     //================================================================================
-    override func viewWillAppear(_ animated: Bool)
+    @objc func refreshControlDidChanged()
     {
-        super.viewWillAppear(animated);
+        self.flickrListViewModel?.page = Flickr_StartPage;
         
-        //////////////////////////////////////////////////
-
-        self.createMainUI();
-        
-        //////////////////////////////////////////////////
-
         self.loadData();
-    }
-    
-    
-    //================================================================================
-    //
-    //================================================================================
-    override func viewWillDisappear(_ animated: Bool)
-    {
-        super.viewWillDisappear(animated)
-        
-        //////////////////////////////////////////////////
-
-        self.removeMainUI();
     }
     
     
@@ -109,13 +62,17 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - Private UI method
+    // MARK: - Override UI method
 
     //================================================================================
     //
     //================================================================================
-    private func createMainUI()
+    override func createMainUI()
     {
+        super.createMainUI();
+        
+        //////////////////////////////////////////////////
+
         self.bottomSpinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium);
         self.bottomSpinner?.color = UIColor.darkGray;
         self.bottomSpinner?.hidesWhenStopped = true;
@@ -127,32 +84,7 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
    
         //////////////////////////////////////////////////
 
-        let layout = UICollectionViewFlowLayout.init();
-        layout.itemSize = CGSize(width: self.view.bounds.size.width/2, height: self.view.bounds.size.height/2);
-        layout.minimumLineSpacing = 0;
-        layout.minimumInteritemSpacing = 0;
-        
-        if let tabbarController = self.tabBarController
-        {
-            let height = self.view.bounds.size.height-tabbarController.tabBar.bounds.size.height;
-            
-            self.collectionView = UICollectionView.init(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height), collectionViewLayout: layout);
-          
-        }
-    
-        
-        guard let _collectionView = self.collectionView else {
-            return;
-        }
-    
-        _collectionView.backgroundColor = UIColor.clear;
-        _collectionView.dataSource = self;
-        _collectionView.delegate = self;
-        _collectionView.register(FlickrListCollectionCellView.self, forCellWithReuseIdentifier: "FlickrListCollectionCellView");
-        _collectionView.refreshControl = self.refreshControl;
-        
-      
-        self.view.addSubview(_collectionView);
+        self.collectionView?.refreshControl = self.refreshControl;
         
         //////////////////////////////////////////////////
         
@@ -161,27 +93,23 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
         }
         
         self.collectionView?.addSubview(_bottomSpinner);
-        
     }
     
     
     //================================================================================
     //
     //================================================================================
-    private func removeMainUI()
+    override func removeMainUI()
     {
+        super.removeMainUI();
+        
+        //////////////////////////////////////////////////
+
         self.refreshControl?.removeFromSuperview();
         self.refreshControl = nil;
         
         self.bottomSpinner?.removeFromSuperview();
         self.bottomSpinner = nil
-        
-        
-        self.collectionView?.delegate = nil;
-        self.collectionView?.dataSource = nil;
-        
-        self.collectionView?.removeFromSuperview();
-        self.collectionView = nil;
     }
     
     
@@ -189,12 +117,12 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - Private Prepare ViewModel method
+    // MARK: - Override Prepare ViewModel method
     
     //================================================================================
     //
     //================================================================================
-    private func bindViewModel()
+    override func bindViewModel()
     {
         self.flickrAPIViewModel = FlickrAPIViewModel();
         
@@ -238,12 +166,29 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - Private Load Flickr method
+    // MARK: - Override Load Flickr method
 
     //================================================================================
     //
     //================================================================================
-    private func loadData()
+    internal override func firstLoadData()
+    {
+        if(self.flickrListViewModel?.numberSections(forFilter: false) ?? 0<=0)
+        {
+            self.loadData();
+        }
+        else
+        {
+            self.flickrListViewModel?.updateFavoriteData(forFilter: false);
+        }
+    }
+    
+    
+    
+    //================================================================================
+    //
+    //================================================================================
+    internal override func loadData()
     {
         guard let _keyword = self.flickrListViewModel?.keyword else
         {
@@ -285,118 +230,6 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
                 _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response, forFilter: false);
             }
         };
-    }
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - Private Delegate method
-
-    //================================================================================
-    //
-    //================================================================================
-    @objc private func requestSendBack()
-    {
-        guard let _delegate = self.delegate else {
-            return;
-        }
-      
-        _delegate.flickrListViewControllerDidBack(flickrListViewController: self);
-    }
-    
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - Private RefreshControl action method
-
-    //================================================================================
-    //
-    //================================================================================
-    @objc func refreshControlDidChanged()
-    {
-        self.flickrListViewModel?.page = Flickr_StartPage;
-        
-        self.loadData();
-    }
-    
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - UICollectionViewDatasource method
-
-    //================================================================================
-    //
-    //================================================================================
-    func numberOfSections(in collectionView: UICollectionView) -> Int
-    {
-        return self.flickrListViewModel?.numberSections(forFilter: false) ?? 0;
-    }
-    
-    
-    //================================================================================
-    //
-    //================================================================================
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
-    {
-        let count = self.flickrListViewModel?.numberOfRowsInSection(section: section, forFilter: false) ?? 0;
-        
-        return count;
-    }
-    
-    
-    //================================================================================
-    //
-    //================================================================================
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
-        if let cell:FlickrListCollectionCellView = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickrListCollectionCellView", for: indexPath) as? FlickrListCollectionCellView {
-            
-            let rowModel = self.flickrListViewModel?.rowModelAtIndexPath(indexPath: indexPath, forFilter: false);
-            
-            cell.bottomLabel?.text = rowModel?.text;
-            
-            guard let flickrPhotoModel = rowModel?.object as? FlickrPhotoModel else
-            {
-                return cell;
-            }
-            
-
-            cell.showImageLoading();
-            
-            DownloadImageViewModel.sharedInstance.loadImageFromModel(model: flickrPhotoModel){ (image:UIImage?) in
-                cell.hideImageLoading();
-                cell.imageView?.image = image;
-            };
-            
-            return cell;
-        }
-        else
-        {
-            return UICollectionViewCell();
-        }
-    }
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: -  UICollectionViewLayoutDelegate Method
-    
-    //================================================================================
-    //
-    //================================================================================
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
-        return CGSize(width: collectionView.bounds.size.width/2, height: collectionView.bounds.size.width/2);
     }
     
     

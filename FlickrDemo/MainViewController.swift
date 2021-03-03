@@ -44,7 +44,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
         //////////////////////////////////////////////////
         
         
-        self.navigationItem.title = MVC_MLS_MLS_SearchInputPage;
+        self.navigationItem.title = MVC_MLS_SearchInputPage;
     }
     
     
@@ -144,7 +144,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
             return;
         }
         #if DEBUG
-        keywordTextField.text = "dog";
+        keywordTextField.text = "美食";
         #endif
         keywordTextField.placeholder = MVC_MLS_Keyword;
         keywordTextField.textAlignment = NSTextAlignment.center;

@@ -7,10 +7,10 @@
 
 import UIKit
 
-class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewControllerDelegate{
+class RootCoordinator: NSObject, MainViewControllerDelegate{
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: Private Present  method
+    // MARK: - Private Present  method
     
     //================================================================================
     //
@@ -31,7 +31,6 @@ class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewContr
         //////////////////////////////////////////////////
 
         let flickrListViewController : FlickrListViewController = FlickrListViewController.init(viewModel: flickrListViewModel);
-        flickrListViewController.delegate = self;
       
         flickrListViewController.tabBarItem =
             UITabBarItem(tabBarSystemItem:.search, tag: 100)
@@ -47,8 +46,7 @@ class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewContr
         //////////////////////////////////////////////////
 
         let favoriteViewController : FavoriteViewController = FavoriteViewController.init(viewModel: favoriteViewModel);
-        favoriteViewController.delegate = self;
-      
+     
         favoriteViewController.tabBarItem =
             UITabBarItem(tabBarSystemItem:.favorites, tag: 101)
         
@@ -65,7 +63,7 @@ class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewContr
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: MainViewControllerDelegate method
+    // MARK: - MainViewControllerDelegate method
     
     //================================================================================
     //
@@ -74,20 +72,4 @@ class RootCoordinator: NSObject, MainViewControllerDelegate, FlickrListViewContr
     {
         self.presentFlickrListViewController(viewController: mainViewController, keyword: keyword, cuntOfPage: countOfPage);
     }
-    
-    
-    
-    
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // MARK: - FlickrListViewControllerDelegate method
-
-    //================================================================================
-    //
-    //================================================================================
-    func flickrListViewControllerDidBack(flickrListViewController: FlickrListViewController)
-    {
-        flickrListViewController.navigationController?.popViewController(animated: true);
-    }
-
 }

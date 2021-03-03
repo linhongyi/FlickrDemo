@@ -9,3 +9,6 @@
 "MLS_Keyword" = "關鍵字";
 "MLS_NumberOfPage" = "每頁幾筆";
 "MLS_SearchInputPage" = "搜尋輸入頁";
+
+//FavoriteViewController
+"MLS_MyFavorite" = "我的最愛";
