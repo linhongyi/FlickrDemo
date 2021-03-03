@@ -56,3 +56,14 @@ let FLVC_FavoriteButtonSize = CGSize(width: 30, height: 30);
 // MARK: -  Storage Key Settings
 
 let Flickr_StorageKey = "Flickr_StorageKey";
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// MARK: - Image Define
+
+let Flickr_ImageExtension = ".png";
+

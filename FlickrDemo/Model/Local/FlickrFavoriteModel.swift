@@ -11,8 +11,6 @@ class FlickrFavoriteModel: NSObject, NSSecureCoding, NSCopying {
 
     static var supportsSecureCoding: Bool = true;
     
-    var favorite:Bool = false;
-    var imageUrl:String? = "";
     var title:String? = "";
     var id:String! = "";
     
@@ -22,9 +20,9 @@ class FlickrFavoriteModel: NSObject, NSSecureCoding, NSCopying {
     //================================================================================
     //
     //================================================================================
-    required init(favorite:Bool, imageUrl:String, title:String) {
-        self.favorite = favorite;
-        self.imageUrl = imageUrl;
+    required init(id:String, title:String) {
+  
+        self.id = id;
         self.title = title;
     
         super.init();
@@ -41,8 +39,8 @@ class FlickrFavoriteModel: NSObject, NSSecureCoding, NSCopying {
     //
     //================================================================================
     required init(coder aDecoder: NSCoder) {
-        favorite = aDecoder.decodeObject(forKey: "favorite") as! Bool;
-        imageUrl = aDecoder.decodeObject(forKey: "imageUrl") as? String;
+
+        id = aDecoder.decodeObject(forKey: "id") as? String;
         title = aDecoder.decodeObject(forKey: "title") as? String;
     }
     
@@ -51,8 +49,7 @@ class FlickrFavoriteModel: NSObject, NSSecureCoding, NSCopying {
     //
     //================================================================================
     func encode(with coder: NSCoder) {
-        coder.encode(favorite, forKey: "favorite");
-        coder.encode(imageUrl, forKey: "imageUrl");
+        coder.encode(id, forKey: "id");
         coder.encode(title, forKey: "title");
     }
     
@@ -68,7 +65,7 @@ class FlickrFavoriteModel: NSObject, NSSecureCoding, NSCopying {
     //================================================================================
     func copy(with zone: NSZone? = nil) -> Any
     {
-        return type(of:self).init(favorite: self.favorite, imageUrl: self.imageUrl ?? "", title: self.title ?? "");
+        return type(of:self).init(id: self.id ?? "", title: self.title ?? "");
     }
     
 }

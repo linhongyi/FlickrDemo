@@ -9,4 +9,5 @@ import UIKit
 
 class FlickrFavoriteRowModel: RowModel {
     public var favorite:Bool = false;
+    public var id:String! = "";
 }

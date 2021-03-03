@@ -11,8 +11,8 @@ class SectionViewModel {
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // MARK: - Property
-    internal var sectionModelsForDefault:Array = Array<SectionModel>()
-    internal var sectionModelsForFilter:Array = Array<SectionModel>()
+    internal var sectionModelsForDefault:[SectionModel] = [SectionModel]();
+    internal var sectionModelsForFilter:[SectionModel] = [SectionModel]();
     
     
     
@@ -47,7 +47,7 @@ class SectionViewModel {
     //================================================================================
     //
     //================================================================================
-    func sectionModels(forFilter:Bool)-> Array<SectionModel>{
+    func sectionModels(forFilter:Bool)-> [SectionModel]{
         return (forFilter==true) ? self.sectionModelsForFilter : self.sectionModelsForDefault
     }
     
@@ -149,5 +149,21 @@ class SectionViewModel {
         } while(0 != 0)
         
         return result
+    }
+    
+    
+    //================================================================================
+    //
+    //================================================================================
+    public func removeAllObjects(forFilter:Bool)
+    {
+        if(forFilter==true)
+        {
+            self.sectionModelsForFilter.removeAll();
+        }
+        else
+        {
+            self.sectionModelsForDefault.removeAll();
+        }
     }
 }
