@@ -8,7 +8,7 @@
 import UIKit
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MARK: API Define
+// MARK: - API Define
 
 let FlickrPhotoSearchAPI = "https://www.flickr.com/services/rest/?method=flickr.photos.search";
 let FlickrPhotoURL = "https://live.staticflickr.com/";
@@ -21,7 +21,7 @@ let Flickr_StartPage = 1;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MARK: Image Cached method
+// MARK: - Image Cached method
 
 let FlickrDemo_ImageCachedCount = 50;
 let FlickrDemo_MaximumDownloadImageTask = 50;
@@ -31,7 +31,7 @@ let FlickrDemo_MaximumDownloadImageTask = 50;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MARK: MainViewController ParameterDefine
+// MARK: - MainViewController ParameterDefine
 
 let MVC_TextFieldHeight = 44;
 let MVC_ButtonHeight = 44;
@@ -42,7 +42,17 @@ let MVC_ContentEdgeInsets:UIEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MARK: FlickrListViewController ParameterDefine
+// MARK: - FlickrListViewController ParameterDefine
 
 let FLVC_BottomSpinnerHeight = 44.0;
 let FLVC_ImageLoadBusyIndicatorViewSize = CGSize(width: 30, height: 30);
+let FLVC_FavoriteButtonSize = CGSize(width: 30, height: 30);
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// MARK: -  Storage Key Settings
+
+let Flickr_StorageKey = "Flickr_StorageKey";

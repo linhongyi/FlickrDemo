@@ -132,8 +132,14 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
         layout.minimumLineSpacing = 0;
         layout.minimumInteritemSpacing = 0;
         
-        self.collectionView = UICollectionView.init(frame: self.view.bounds, collectionViewLayout: layout);
-      
+        if let tabbarController = self.tabBarController
+        {
+            let height = self.view.bounds.size.height-tabbarController.tabBar.bounds.size.height;
+            
+            self.collectionView = UICollectionView.init(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height), collectionViewLayout: layout);
+          
+        }
+    
         
         guard let _collectionView = self.collectionView else {
             return;
@@ -218,7 +224,7 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
                 }
                 
                 self.bottomSpinner?.frame = CGRect(x: 0,
-                                                   y: Double(collectionHeight)+FLVC_BottomSpinnerHeight/2,
+                                                   y: Double(collectionHeight),
                                                    width: Double(self.collectionView?.frame.size.width ?? self.view.bounds.size.width),
                                                    height: FLVC_BottomSpinnerHeight);
                 
@@ -272,11 +278,11 @@ class FlickrListViewController: UIViewController , UICollectionViewDataSource, U
 
             if(_flickrListViewModel.page==Flickr_StartPage)
             {
-                _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response);
+                _flickrListViewModel.clearAndloadDataFromResponse(flickrPhotoResponse: _response, forFilter: false);
             }
             else
             {
-                _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response);
+                _flickrListViewModel.appendDataFromResponse(flickrPhotoResponse: _response, forFilter: false);
             }
         };
     }

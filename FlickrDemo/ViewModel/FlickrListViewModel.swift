@@ -23,23 +23,24 @@ class FlickrListViewModel : SectionViewModel {
     //================================================================================
     //
     //================================================================================
-    public func clearAndloadDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse)
+    public func clearAndloadDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse, forFilter:Bool)
     {
-        self.sectionModelsForDefault.removeAll();
-        self.sectionModelsForFilter.removeAll();
+        var sectionModels = self.sectionModels(forFilter: forFilter);
+        
+        sectionModels.removeAll();
         
         //////////////////////////////////////////////////
 
         self.total = Int(flickrPhotoResponse.photos.total) ?? 0;
         
-        self.appendDataFromResponse(flickrPhotoResponse: flickrPhotoResponse);
+        self.appendDataFromResponse(flickrPhotoResponse: flickrPhotoResponse, forFilter: forFilter);
     }
     
     
     //================================================================================
     //
     //================================================================================
-    public func appendDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse)
+    public func appendDataFromResponse(flickrPhotoResponse:FlickrPhotoResponse, forFilter:Bool)
     {
         repeat
         {
@@ -61,7 +62,7 @@ class FlickrListViewModel : SectionViewModel {
 
             for photo in flickrPhotoResponse.photos.photo
             {
-                let rowModel:RowModel? = RowModel();
+                let rowModel:FlickrFavoriteRowModel? = FlickrFavoriteRowModel();
                 
                 guard let _rowModel = rowModel else {
                     return;
@@ -127,5 +128,36 @@ class FlickrListViewModel : SectionViewModel {
     public func supportPageLoad(forFilter: Bool)->Bool
     {
         return self.sectionModels(forFilter: false).count<self.total;
+    }
+    
+    
+    //================================================================================
+    //
+    //================================================================================
+    public func updateFaviroteStateFromIds(favoriteIds:[String], forFilter:Bool)
+    {
+        let sectionModels = self.sectionModels(forFilter: forFilter);
+        
+        for sectionModel in sectionModels
+        {
+            for rowModel in sectionModel.rowModels
+            {
+                guard let favoriteRowModel = rowModel as? FlickrFavoriteRowModel else {
+                    return;
+                }
+                
+                guard let photoModel = favoriteRowModel.object as? FlickrPhotoModel else {
+                    return;
+                }
+                
+                
+                if(favoriteIds.firstIndex(of: photoModel.id)==NSNotFound)
+                {
+                    continue;
+                }
+                
+                favoriteRowModel.favorite = true;
+            }
+        }
     }
 }
