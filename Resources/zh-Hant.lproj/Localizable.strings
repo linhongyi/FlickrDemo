@@ -14,5 +14,8 @@
 "MLS_NumberOfPage" = "每頁幾筆";
 "MLS_SearchInputPage" = "搜尋輸入頁";
 
+//FlickrListViewControlle
+"MLS_SearchResult" = "搜尋結果";
+
 //FavoriteViewController
 "MLS_MyFavorite" = "我的最愛";
